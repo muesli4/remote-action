@@ -13,7 +13,8 @@ cmd :: String -> Server ()
 cmd = liftIO . void . callCommand
 
 main :: IO ()
-main = withXDGConfigFile "server.conf" $ \(Config defs ss) ->
+main = withXDGConfigFile "server.conf" $ \cfg@(Config defs ss) ->
     withJust (lookup "port" defs >>= readMaybe) (failConfig "invalid port") $ \port ->
-        withJust (lookup "commands" ss) (failConfig "no commands specified") $
-            serve port . map (\(n, c) -> method n $ cmd c)
+        withJust (lookup "commands" ss) (failConfig "no commands specified") $ \cs -> do
+            mapM_ (putStrLn . ("Found method: " ++) . fst) cs
+            serve port $ map (\(n, c) -> method n $ cmd c) cs

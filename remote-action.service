@@ -1,0 +1,9 @@
+[Unit]
+Description=Run remote-action-server as user service
+
+[Service]
+ExecStart=/usr/bin/remote-action-server
+Restart=on-abort
+
+[Install]
+WantedBy=default.target
